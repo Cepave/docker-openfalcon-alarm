@@ -1,5 +1,6 @@
 #!/bin/bash
 
+APP="falcon-alarm"
 WAIT_SERVICE_READY=10
 
 function check_service(){
@@ -14,12 +15,12 @@ function check_service(){
 
 tar -zxf $PACKDIR/$PACKFILE -C $WORKDIR
 cp $CONFIGDIR/$CONFIGFILE $WORKDIR
+
 $WORKDIR/control restart
-sleep $WAIT_SERVICE_READY
-check_service
-if [ $? -eq 0 ] ; then
-  $WORKDIR/control tail
-else
-  echo "Failed to start."
-  exit 1
-fi
+while sleep $WAIT_SERVICE_READY; do
+  check_service
+  if [ $? -eq 1 ] ; then
+    echo "$APP exited"
+    exit 1
+  fi
+done
