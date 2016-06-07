@@ -3,8 +3,9 @@
 APP="falcon-alarm"
 WAIT_SERVICE_READY=10
 
-function check_service(){
-  status=$($WORKDIR/control status)
+check_service()
+{
+  status=$(bash -i $WORKDIR/control status)
   echo $status | grep -q "stoped"
   if [ $? -eq 0 ] ; then
     return 1
@@ -13,10 +14,9 @@ function check_service(){
   fi
 }
 
-tar -zxf $PACKDIR/$PACKFILE -C $WORKDIR
 cp $CONFIGDIR/$CONFIGFILE $WORKDIR
 
-$WORKDIR/control restart
+bash -i $WORKDIR/control restart
 while sleep $WAIT_SERVICE_READY; do
   check_service
   if [ $? -eq 1 ] ; then
