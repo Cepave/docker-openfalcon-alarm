@@ -11,17 +11,22 @@ VOLUME $CONFIGDIR $WORKDIR
 COPY $CONFIGFILE $CONFIGDIR/
 ADD $PACKFILE $WORKDIR
 
-WORKDIR /root
-COPY run.sh ./
+WORKDIR $WORKDIR
+COPY run.sh $WORKDIR
 
+# Set timezone & bash
+# Set alias in the case of user want to execute control in their terminal
 RUN \
-  apk add --update bash && \
-  echo "alias ps='pstree'" > ~/.bashrc && \
-  rm -rf /var/cache/apk/*
+  apk add --update tzdata bash \
+  && cp /usr/share/zoneinfo/Asia/Taipei /etc/localtime \
+  && echo "Asia/Taipei" > /etc/timezone \
+  && apk del tzdata \
+  && rm -rf /var/cache/apk/* \
+  && echo "alias ps='pstree'" > ~/.bashrc
 
 # Port
 EXPOSE 9912
 
 # Start
-CMD ["./run.sh"]
+CMD ["bash", "run.sh"]
 
