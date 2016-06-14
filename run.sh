@@ -29,8 +29,6 @@ check_service()
   fi
 }
 
-cp $CONFIGDIR/$CONFIGFILE $WORKDIR
-
 # Source the script to retain the alias
 source $WORKDIR/control restart
 while sleep $WAIT_SERVICE_READY; do
