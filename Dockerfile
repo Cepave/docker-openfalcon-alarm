@@ -10,7 +10,6 @@ RUN \
   apk add --no-cache tzdata bash \
   && cp /usr/share/zoneinfo/Asia/Taipei /etc/localtime \
   && echo "Asia/Taipei" > /etc/timezone \
-  && apk del tzdata \
   && echo "alias ps='pstree'" > ~/.bashrc \
   && mkdir -p $CONFIGDIR
 
