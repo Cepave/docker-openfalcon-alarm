@@ -1,22 +1,29 @@
-FROM ubuntu:14.04.2
+FROM alpine:3.4
 
 MAINTAINER minimum@cepave.com
 
-ENV WORKDIR=/home/alarm PACKDIR=/package PACKFILE=falcon-alarm.tar.gz CONFIGDIR=/config CONFIGFILE=cfg.json
+ENV WORKDIR=/home/alarm PACKFILE=falcon-alarm.tar.gz CONFIGDIR=/config CONFIGFILE=cfg.json
 
-# Volume
-VOLUME $CONFIGDIR $WORKDIR $PACKDIR
+# Set timezone, bash, config dir
+# Set alias in the case of user want to execute control in their terminal
+RUN \
+  apk add --no-cache tzdata bash \
+  && cp /usr/share/zoneinfo/Asia/Taipei /etc/localtime \
+  && echo "Asia/Taipei" > /etc/timezone \
+  && echo "alias ps='pstree'" > ~/.bashrc \
+  && mkdir -p $CONFIGDIR
 
 # Install Open-Falcon Alarm Component
 COPY $CONFIGFILE $CONFIGDIR/
-COPY $PACKFILE $PACKDIR/
+ADD $PACKFILE $WORKDIR
+RUN ln -snf $CONFIGDIR/$CONFIGFILE $WORKDIR/$CONFIGFILE
 
-WORKDIR /root
-COPY run.sh ./
+WORKDIR $WORKDIR
+COPY run.sh $WORKDIR
 
 # Port
 EXPOSE 9912
 
 # Start
-CMD ["./run.sh"]
+CMD ["bash", "run.sh"]
 
