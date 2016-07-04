@@ -13,9 +13,6 @@ function check_service(){
   fi
 }
 
-tar -zxf $PACKDIR/$PACKFILE -C $WORKDIR
-cp $CONFIGDIR/$CONFIGFILE $WORKDIR
-
 $WORKDIR/control restart
 while sleep $WAIT_SERVICE_READY; do
   check_service
